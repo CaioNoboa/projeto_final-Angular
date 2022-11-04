@@ -2,7 +2,7 @@
 
 ## Como utilizar
 
-### Para mais informações sobre disponibilização do back-end, acesse: **https://github.com/desenvolvedor-io/curso-angular-avancado**
+### Para mais informações sobre disponibilização do back-end, acesse: https://github.com/desenvolvedor-io/curso-angular-avancado
 
 ### Disponibilizar apenas o back-end
 Rode o comando (apontando a pasta local do arquivo):  
