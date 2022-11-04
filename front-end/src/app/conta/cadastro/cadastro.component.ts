@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { CustomValidators } from '@narik/custom-validators';
 import { fromEvent, merge, Observable } from 'rxjs';
 import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
-// import { ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 
 import { Usuario } from '../models/usuario';
 import { ContaService } from '../services/conta.service';
@@ -29,7 +29,14 @@ export class CadastroComponent implements OnInit, AfterViewInit {
   genericValidator: GenericValidator;
   displayMessage: DisplayMessage = {};
 
-  constructor(private fb: FormBuilder, private contaService: ContaService) {
+  mudancasNaoSalvas: boolean;
+
+  constructor(
+    private fb: FormBuilder,
+    private contaService: ContaService,
+    private router: Router,
+    private toastr: ToastrService
+  ) {
     this.validationMessages = {
       email: {
         required: 'Informe o e-mail',
@@ -69,6 +76,7 @@ export class CadastroComponent implements OnInit, AfterViewInit {
     // O processamento das observables será feito com o merge. Para cada evento disparado do blur processe o formulário de cadastro para verificar consistências das informações segundo as validações.
     merge(...controlBlurs).subscribe(() => {
       this.displayMessage = this.genericValidator.processarMensagens(this.cadastroForm);
+      this.mudancasNaoSalvas = true;
     })
   }
 
@@ -81,16 +89,27 @@ export class CadastroComponent implements OnInit, AfterViewInit {
           sucesso => { this.processarSucesso(sucesso) },
           falha => { this.processarFalha(falha) },
         );
+
+      this.mudancasNaoSalvas = false;
     }
   }
 
   processarSucesso(response: any) {
+    this.cadastroForm.reset();
+    this.errors = [];
 
+    this.contaService.LocalStorage.salvarDadosLocaisUsuario(response);
+
+    let toast = this.toastr.success('Registro realizado com Sucesso!', 'Bem vindo!!!');
+    if (toast) {
+      toast.onHidden.subscribe(() => {
+        this.router.navigate(['/home']);
+      });
+    }
   }
 
   processarFalha(fail: any) {
-
+    this.errors = fail.error.errors;
+    this.toastr.error('Ocorreu um erro!', 'Opa :(');
   }
-
-
 }

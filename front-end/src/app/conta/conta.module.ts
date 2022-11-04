@@ -12,6 +12,7 @@ import { ContaRoutingModule } from './conta.route';
 import { ContaService } from './services/conta.service';
 
 import { NarikCustomValidatorsModule } from '@narik/custom-validators';
+import { ContaGuard } from './services/conta.guard';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { NarikCustomValidatorsModule } from '@narik/custom-validators';
     NarikCustomValidatorsModule
   ],
   providers: [
-    ContaService
+    ContaService,
+    ContaGuard
   ]
 })
 export class ContaModule { }
